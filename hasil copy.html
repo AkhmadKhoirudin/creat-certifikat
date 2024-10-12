@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        canvas {
+            width: 100%;
+            height: auto; 
+            margin: 20px auto;
+            border: 1px solid #000;
+        }
+        #downloadButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Your Certificate</h1>
+
+<canvas id="certificateCanvas" width="2400" height="1800"></canvas>
+<button id="downloadButton">Download PDF</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    const canvas = document.getElementById('certificateCanvas');
+    const ctx = canvas.getContext('2d');
+    const downloadButton = document.getElementById('downloadButton');
+    let image = new Image();
+
+    // Load certificate template
+    image.src = 'sertifikat.png'; // Path to your certificate image
+
+    // Wait for image to load before drawing
+    image.onload = () => {
+        // Menggambar gambar pada resolusi tinggi
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // Retrieve the name and position from localStorage
+        const name = localStorage.getItem('certName');
+        const position = localStorage.getItem('certPosition');
+
+        if (name && position) {
+            // Set font for name
+            ctx.font = '100px Georgia';
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+
+            // Custom horizontal positioning for name and position
+            const xName = 1470;  // Adjust horizontal position (x-axis)
+            const yName = 740;   // Adjust vertical position (y-axis) for name
+            const yPosition = 990; // Adjust vertical position (y-axis) for position
+
+            // Add the name text
+            ctx.fillText(name, xName, yName); 
+
+            // Set font for position
+            ctx.font = '80px Georgia';
+            ctx.fillText(position, xName, yPosition); 
+
+            // Show download button
+            downloadButton.style.display = 'block';
+        }
+    };
+
+    downloadButton.addEventListener('click', function() {
+        // Use a higher scale for better image quality in PDF
+        html2canvas(canvas, { scale: 4 }).then(canvasImage => {  // Increase scale to 4 for better quality
+            const imgData = canvasImage.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('landscape', 'mm', [canvas.width, canvas.height]);  // Create PDF with canvas size
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height); // Add image at full size without margins
+            pdf.save('certificate.pdf');
+        });
+    });
+</script>
+
+</body>
+</html>

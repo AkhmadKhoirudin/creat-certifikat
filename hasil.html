@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        canvas {
+            width: 100%;
+            height: auto; 
+            margin: 20px auto;
+            border: 1px solid #000;
+        }
+        #downloadButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Your Certificate</h1>
+
+<canvas id="certificateCanvas" width="2400" height="1800"></canvas>
+<button id="downloadButton">Download PNG</button>
+
+<script>
+    const canvas = document.getElementById('certificateCanvas');
+    const ctx = canvas.getContext('2d');
+    const downloadButton = document.getElementById('downloadButton');
+    let image = new Image();
+
+    // Load certificate template
+    image.src = 'sertifikat.png'; // Path to your certificate image
+
+    // Wait for image to load before drawing
+    image.onload = () => {
+        // Menggambar gambar pada resolusi tinggi
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // Retrieve the name and position from localStorage
+        const name = localStorage.getItem('certName');
+        const position = localStorage.getItem('certPosition');
+
+        if (name && position) {
+            // Set font for name
+            ctx.font = '100px Georgia';
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+
+            // Custom horizontal positioning for name and position
+            const xName = 1470;  // Adjust horizontal position (x-axis)
+            const yName = 740;   // Adjust vertical position (y-axis) for name
+            const yPosition = 990; // Adjust vertical position (y-axis) for position
+
+            // Add the name text
+            ctx.fillText(name, xName, yName); 
+
+            // Set font for position
+            ctx.font = '80px Georgia';
+            ctx.fillText(position, xName, yPosition); 
+
+            // Show download button
+            downloadButton.style.display = 'block';
+        }
+    };
+
+    downloadButton.addEventListener('click', function() {
+        // Convert canvas to PNG and trigger download
+        const imgData = canvas.toDataURL('image/png');  // Convert canvas to PNG
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'certificate.png';  // Specify file name
+        link.click();  // Trigger download
+    });
+</script>
+
+</body>
+</html>

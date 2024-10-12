@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Certificate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        input[type="text"], select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Generate Your Certificate</h1>
+
+<form id="certForm">
+    <label for="name">Enter your name:</label><br>
+    <input type="text" id="name" placeholder="Your Name" required><br>
+
+    <label for="position">Jabatan:</label><br>
+    <select id="position" name="position" required>
+        <option value="">--Pilih Jabatan--</option>
+        <option value="Manager">Manager</option>
+        <option value="Supervisor">Supervisor</option>
+        <option value="Staff">Staff</option>
+        <option value="Intern">Intern</option>
+    </select><br>
+
+    <button type="submit">Generate Certificate</button>
+</form>
+
+<script>
+    document.getElementById('certForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Ambil nilai input dari form
+        const name = document.getElementById('name').value;
+        const position = document.getElementById('position').value;
+
+        // Simpan nilai ke localStorage
+        localStorage.setItem('certName', name);
+        localStorage.setItem('certPosition', position);
+
+        // Redirect ke hasil.html
+        window.location.href = 'hasil.html';
+    });
+</script>
+
+</body>
+</html>
